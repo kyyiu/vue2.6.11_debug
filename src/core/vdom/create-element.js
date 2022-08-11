@@ -44,6 +44,18 @@ export function createElement (
   return _createElement(context, tag, data, children, normalizationType)
 }
 
+
+/**
+ * 
+_createElement 方法有 5 个参数，
+context 表示 VNode 的上下文环境，它是 Component 类型；
+tag 表示标签，它可以是一个字符串，也可以是一个 Component；
+data 表示 VNode 的数据，它是一个 VNodeData 类型，可以在 flow/vnode.js 中找到它的定义，
+children 表示当前 VNode 的子节点，它是任意类型的，
+它接下来需要被规范为标准的 VNode 数组；
+normalizationType 表示子节点规范的类型，类型不同规范的方法也就不一样，
+它主要是参考 render 函数是编译生成的还是用户手写的。
+ */
 export function _createElement (
   context: Component,
   tag?: string | Class<Component> | Function | Object,
@@ -92,6 +104,16 @@ export function _createElement (
   } else if (normalizationType === SIMPLE_NORMALIZE) {
     children = simpleNormalizeChildren(children)
   }
+  // 经过对 children 的规范化，children 变成了一个类型为 VNode 的 Array。
+
+  // 这里先对 tag 做判断，如果是 string 类型，
+  // 则接着判断如果是内置的一些节点，则直接创建一个普通 VNode，
+  // 如果是为已注册的组件名，
+  // 则通过 createComponent 创建一个组件类型的 VNode，
+  // 否则创建一个未知的标签的 VNode。 如果是 tag 一个 Component 类型，
+  // 则直接调用 createComponent 创建一个组件类型的 VNode 节点。
+  // 对于 createComponent 创建组件类型的 VNode 的过程，
+  // 本质上它还是返回了一个 VNode。
   let vnode, ns
   if (typeof tag === 'string') {
     let Ctor
