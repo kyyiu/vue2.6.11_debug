@@ -122,6 +122,7 @@ export function createPatchFunction (backend) {
 
   let creatingElmInVPre = 0
 
+  // 作用是通过虚拟节点创建真实的 DOM 并插入到它的父节点中
   function createElm (
     vnode,
     insertedVnodeQueue,
@@ -131,6 +132,7 @@ export function createPatchFunction (backend) {
     ownerArray,
     index
   ) {
+    console.log('vvv_createElm', vnode, parentElm);
     if (isDef(vnode.elm) && isDef(ownerArray)) {
       // This vnode was used in a previous render!
       // now it's used as a new node, overwriting its elm would cause
@@ -190,14 +192,21 @@ export function createPatchFunction (backend) {
       } else {
         createChildren(vnode, children, insertedVnodeQueue)
         if (isDef(data)) {
+          // 执行所有的 create 的钩子并把 vnode push 到 insertedVnodeQueue 中。
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
+        // insert 方法把 DOM 插入到父节点中，因为是递归调用，
+        // 子元素会优先调用 insert，
+        // 所以整个 vnode 树节点的插入顺序是先子后父
+        // insert 逻辑很简单，调用一些 nodeOps 把子节点插入到父节点中
         insert(parentElm, vnode.elm, refElm)
       }
 
       if (process.env.NODE_ENV !== 'production' && data && data.pre) {
         creatingElmInVPre--
       }
+      // 如果 vnode 节点不包含 tag，
+      // 则它有可能是一个注释或者纯文本节点，可以直接插入到父元素中。
     } else if (isTrue(vnode.isComment)) {
       vnode.elm = nodeOps.createComment(vnode.text)
       insert(parentElm, vnode.elm, refElm)
@@ -207,6 +216,7 @@ export function createPatchFunction (backend) {
     }
   }
 
+  // 尝试创建子组件
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
     let i = vnode.data
     if (isDef(i)) {
@@ -281,6 +291,9 @@ export function createPatchFunction (backend) {
     }
   }
 
+  // 遍历子虚拟节点，递归调用 createElm，
+  // 这是一种常用的深度优先的遍历算法，
+  // 这里要注意的一点是在遍历过程中会把 vnode.elm 作为父容器的 DOM 节点占位符传入。
   function createChildren (vnode, children, insertedVnodeQueue) {
     if (Array.isArray(children)) {
       if (process.env.NODE_ENV !== 'production') {
@@ -697,17 +710,25 @@ export function createPatchFunction (backend) {
     }
   }
 
+  // oldVnode 表示旧的 VNode 节点，它也可以不存在或者是一个 DOM 对象；
+  // vnode 表示执行 _render 后返回的 VNode 的节点；
+  // hydrating 表示是否是服务端渲染；
+  // removeOnly 是给 transition-group 用的
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
+    console.log('vvv1', oldVnode, vnode);
     if (isUndef(vnode)) {
+      console.log('vvv_unDef');
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
     }
 
     let isInitialPatch = false
     const insertedVnodeQueue = []
-
+    // 页面中实际上不存在的dom，走这个分支
     if (isUndef(oldVnode)) {
+      console.log('vvv空的');
       // empty mount (likely as component), create new root element
+      // 空挂载（可能作为组件），创建新的根元素
       isInitialPatch = true
       createElm(vnode, insertedVnodeQueue)
     } else {
@@ -738,15 +759,17 @@ export function createPatchFunction (backend) {
               )
             }
           }
+          
           // either not server-rendered, or hydration failed.
           // create an empty node and replace it
+          // 通过 emptyNodeAt 方法把 oldVnode 转换成 VNode 对象
           oldVnode = emptyNodeAt(oldVnode)
         }
 
         // replacing existing element
         const oldElm = oldVnode.elm
         const parentElm = nodeOps.parentNode(oldElm)
-
+        // 一般首次渲染的元素即为body，实际上整个过程就是递归创建了一个完整的 DOM 树并插入到 Body 上。
         // create new node
         createElm(
           vnode,
@@ -796,7 +819,8 @@ export function createPatchFunction (backend) {
         }
       }
     }
-
+    console.log('vvv2', oldVnode, vnode);
+    debugger
     invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)
     return vnode.elm
   }
