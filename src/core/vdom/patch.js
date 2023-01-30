@@ -765,7 +765,7 @@ export function createPatchFunction (backend) {
           // 通过 emptyNodeAt 方法把 oldVnode 转换成 VNode 对象
           oldVnode = emptyNodeAt(oldVnode)
         }
-
+        console.log('ggg')
         // replacing existing element
         const oldElm = oldVnode.elm
         const parentElm = nodeOps.parentNode(oldElm)
