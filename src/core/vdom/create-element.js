@@ -115,6 +115,7 @@ export function _createElement (
   // 对于 createComponent 创建组件类型的 VNode 的过程，
   // 本质上它还是返回了一个 VNode。
   let vnode, ns
+  console.log(tag);
   if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)

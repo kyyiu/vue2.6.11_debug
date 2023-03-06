@@ -148,6 +148,7 @@ export function mountComponent (
 ): Component {
   // 创建vm.$el 并替换 el
   vm.$el = el
+  console.log('xxxee2', vm.$el, el, vm);
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {

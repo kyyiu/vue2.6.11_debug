@@ -7,21 +7,60 @@
   <title>Document</title>
 </head>
 <body>
-  <div id="app">{{msg}}</div>
+  <div>
+    123a
+    <div id="app">
+      <div>
+        {{msg}}
+      </div>
+    </div>
+    <div>xxx</div>
+    <div>yyy</div>
+  </div>
+  <template id="xx">
+    <div>
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </div>
+  </template>
   <script src="./dist/vue.js"></script>
   <script>
     const t = {
-      template: "<h1>123</h1>"
+      template: `<div>
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </div>`
     }
+    const com = Vue.component('com', {
+      // template: '["xx"]'
+      render: function(c) {
+        return  [c(t)]
+      }
+      // template: '123',
+      // render: c=>{
+      //   return c('div',{},[c('div', {},1),c('div', {},2),c('div', {},3)])
+      // }
+    })
     const vm = new Vue({
+      components: {
+        com: com
+      },
       el: '#app',
+      template: '<com></com>',
       data() {
         return {
           msg: 234
         }
       },
-      // render: c=>c(t)
+      // render: c=>{
+      //   return (
+      //     c('div', {}, [['1', '2', '3']])
+      //   )
+      // }
     })
+    console.log('eee', vm)
   </script>
 </body>
 </html>

@@ -13,7 +13,7 @@ const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
-
+// 缓存了原型上的 $mount 方法，再重新定义该方法
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
@@ -22,6 +22,7 @@ Vue.prototype.$mount = function (
   el = el && query(el)
 
   /* istanbul ignore if */
+  // 对 el 做了限制，Vue 不能挂载在 body、html 这样的根节点上
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
@@ -50,6 +51,7 @@ Vue.prototype.$mount = function (
         }
       } else if (template.nodeType) {
         template = template.innerHTML
+        console.log('tt', template);
       } else {
         if (process.env.NODE_ENV !== 'production') {
           warn('invalid template option:' + template, this)
@@ -84,6 +86,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  console.log('xxxee',el)
   return mount.call(this, el, hydrating)
 }
 

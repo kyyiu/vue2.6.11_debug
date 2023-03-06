@@ -81,6 +81,7 @@ export function createPatchFunction (backend) {
       }
     }
   }
+  console.log('sss', cbs);
 
   function emptyNodeAt (elm) {
     return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm)
@@ -771,6 +772,7 @@ export function createPatchFunction (backend) {
         const parentElm = nodeOps.parentNode(oldElm)
         // 一般首次渲染的元素即为body，实际上整个过程就是递归创建了一个完整的 DOM 树并插入到 Body 上。
         // create new node
+        console.log('ggg', oldElm, nodeOps.nextSibling(oldElm));
         createElm(
           vnode,
           insertedVnodeQueue,
@@ -819,8 +821,7 @@ export function createPatchFunction (backend) {
         }
       }
     }
-    console.log('vvv2', oldVnode, vnode);
-    debugger
+    console.log('vvv2', oldVnode, vnode); 
     invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)
     return vnode.elm
   }
