@@ -27,14 +27,16 @@
   <script src="./dist/vue.js"></script>
   <script>
     const t = {
-      template: `<div>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </div>`
+      template: `<div class='xxxx'>2</div>`,
+      mounted(){
+        console.log('ddd3', this)
+      },
     }
     const com = Vue.component('com', {
       // template: '["xx"]'
+      mounted(){
+        console.log('ddd', document.querySelector('.xxxx'),this)
+      },
       render: function(c) {
         return  [c(t)]
       }
@@ -45,14 +47,18 @@
     })
     const vm = new Vue({
       components: {
-        com: com
+        com: com,
+        t: t
       },
       el: '#app',
-      template: '<com></com>',
+      template: '<div><div>1</div><t></t><div>3</div></div>',
       data() {
         return {
           msg: 234
         }
+      },
+      mounted(){
+        console.log('ddd2', document.querySelector('.xxxx'))
       },
       // render: c=>{
       //   return (
