@@ -27,18 +27,20 @@
   <script src="./dist/vue.js"></script>
   <script>
     const t = {
-      template: `<div class='xxxx'>2</div>`,
-      mounted(){
+      template: `<div class='xxxx'>2<com/></div>`,
+      mounted: [function (){
         console.log('ddd3', this)
-      },
+      }, function (){
+        console.log('ddd4', this)
+      }],
     }
     const com = Vue.component('com', {
       // template: '["xx"]'
       mounted(){
         console.log('ddd', document.querySelector('.xxxx'),this)
       },
-      render: function(c) {
-        return  [c(t)]
+      render(c) {
+        return  c('div', {}, '我是子组件')
       }
       // template: '123',
       // render: c=>{
@@ -47,18 +49,24 @@
     })
     const vm = new Vue({
       components: {
-        com: com,
-        t: t
+        t
       },
       el: '#app',
-      template: '<div><div>1</div><t></t><div>3</div></div>',
+      template: '<div><t/>{{arr[0]}}</div>',
       data() {
         return {
-          msg: 234
+          msg: 234,
+          obj: {
+            oo: '44'
+          },
+          arr: [1]
         }
       },
       mounted(){
-        console.log('ddd2', document.querySelector('.xxxx'))
+        console.log('ddd2', this.obj, this.arr, this.msg, this.msg.__ob__)
+        setTimeout(() => {
+          Vue.set(this.arr, 0, 2)
+        }, 5000);
       },
       // render: c=>{
       //   return (
