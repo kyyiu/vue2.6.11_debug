@@ -52,21 +52,28 @@
         t
       },
       el: '#app',
-      template: '<div><t/>{{arr[0]}}</div>',
+      template: '<div><t/>{{arr[0]}}--<div v-if="show">{{obj.a[0][0]}}</div></div>',
       data() {
         return {
           msg: 234,
+          show: false,
           obj: {
-            oo: '44'
+            oo: '44',
+            a: []
           },
           arr: [1]
         }
       },
       mounted(){
         console.log('ddd2', this.obj, this.arr, this.msg, this.msg.__ob__)
+        this.obj.a = [[1]]
         setTimeout(() => {
-          Vue.set(this.arr, 0, 2)
-        }, 5000);
+          this.show=true
+          setTimeout(() => {
+            this.obj.a = [[2]]
+          }, 3000);
+          // Vue.set(this.arr, 0, 2)
+        }, 3000);
       },
       // render: c=>{
       //   return (
